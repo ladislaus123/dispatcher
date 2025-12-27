@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SessionWorker = void 0;
 const axios_1 = __importDefault(require("axios"));
-const EXECUTION_INTERVAL = 60 * 1000; // 1 minute in milliseconds
+const EXECUTION_INTERVAL = parseInt(process.env.EXECUTION_INTERVAL || '60000', 10); // Default 1 minute in milliseconds
 class SessionWorker {
     constructor(session, queue) {
         this.isRunning = false;

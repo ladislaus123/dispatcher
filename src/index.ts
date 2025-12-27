@@ -1,19 +1,28 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
+import dotenv from 'dotenv';
 import campaignRoutes from './routes/campaigns';
 import { CampaignManager } from './services/campaign-manager';
 import { QueueManager } from './services/queue-manager';
 import { PersistenceManager } from './services/persistence-manager';
 
+// Load environment variables from .env file
+dotenv.config();
+
 const app: Express = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = '0.0.0.0'; // Listen on all network interfaces
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const AUTO_SAVE_INTERVAL = parseInt(process.env.AUTO_SAVE_INTERVAL || '30000', 10);
+const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 
 // Middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb' }));
-app.use(cors());
+app.use(cors({
+  origin: CORS_ORIGIN === '*' ? '*' : CORS_ORIGIN.split(',').map(o => o.trim())
+}));
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, '../public')));
@@ -53,7 +62,7 @@ async function startServer() {
     // Restore active workers (start those that were running)
     await QueueManager.restoreWorkers();
 
-    // Setup periodic auto-save every 30 seconds
+    // Setup periodic auto-save
     setInterval(async () => {
       try {
         await CampaignManager.save();
@@ -61,7 +70,7 @@ async function startServer() {
       } catch (error) {
         console.error('[Server] Auto-save failed:', error);
       }
-    }, 30000);
+    }, AUTO_SAVE_INTERVAL);
 
     // Start Express server
     app.listen(PORT, HOST, () => {
@@ -85,6 +94,7 @@ async function startServer() {
       console.log('\n================================');
       console.log('Turbozap Backend Server Started');
       console.log('================================');
+      console.log(`Environment: ${NODE_ENV}`);
       console.log(`Local: http://localhost:${PORT}`);
 
       if (addresses.length > 0) {
@@ -99,6 +109,9 @@ async function startServer() {
       console.log(`  2. Open port ${PORT} on your router/firewall`);
       console.log(`  3. Use: http://YOUR_PUBLIC_IP:${PORT}`);
       console.log(`  4. Enter the URL in Turbozap's "Backend URL" field`);
+      console.log('\nConfiguration:');
+      console.log(`  Auto-save interval: ${AUTO_SAVE_INTERVAL}ms`);
+      console.log(`  CORS origin: ${CORS_ORIGIN}`);
       console.log('\nPORT: Make sure port ' + PORT + ' is open on your firewall');
       console.log('================================\n');
     });

@@ -6,17 +6,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const campaigns_1 = __importDefault(require("./routes/campaigns"));
 const campaign_manager_1 = require("./services/campaign-manager");
 const queue_manager_1 = require("./services/queue-manager");
 const persistence_manager_1 = require("./services/persistence-manager");
+// Load environment variables from .env file
+dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = '0.0.0.0'; // Listen on all network interfaces
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const AUTO_SAVE_INTERVAL = parseInt(process.env.AUTO_SAVE_INTERVAL || '30000', 10);
+const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 // Middleware
 app.use(express_1.default.json({ limit: '50mb' }));
 app.use(express_1.default.urlencoded({ limit: '50mb' }));
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: CORS_ORIGIN === '*' ? '*' : CORS_ORIGIN.split(',').map(o => o.trim())
+}));
 // Serve static files from public directory
 app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 // Serve uploads directory
@@ -46,7 +54,7 @@ async function startServer() {
         await queue_manager_1.QueueManager.load();
         // Restore active workers (start those that were running)
         await queue_manager_1.QueueManager.restoreWorkers();
-        // Setup periodic auto-save every 30 seconds
+        // Setup periodic auto-save
         setInterval(async () => {
             try {
                 await campaign_manager_1.CampaignManager.save();
@@ -55,7 +63,7 @@ async function startServer() {
             catch (error) {
                 console.error('[Server] Auto-save failed:', error);
             }
-        }, 30000);
+        }, AUTO_SAVE_INTERVAL);
         // Start Express server
         app.listen(PORT, HOST, () => {
             const os = require('os');
@@ -76,6 +84,7 @@ async function startServer() {
             console.log('\n================================');
             console.log('Turbozap Backend Server Started');
             console.log('================================');
+            console.log(`Environment: ${NODE_ENV}`);
             console.log(`Local: http://localhost:${PORT}`);
             if (addresses.length > 0) {
                 console.log('\nNetwork Access (LAN):');
@@ -88,6 +97,9 @@ async function startServer() {
             console.log(`  2. Open port ${PORT} on your router/firewall`);
             console.log(`  3. Use: http://YOUR_PUBLIC_IP:${PORT}`);
             console.log(`  4. Enter the URL in Turbozap's "Backend URL" field`);
+            console.log('\nConfiguration:');
+            console.log(`  Auto-save interval: ${AUTO_SAVE_INTERVAL}ms`);
+            console.log(`  CORS origin: ${CORS_ORIGIN}`);
             console.log('\nPORT: Make sure port ' + PORT + ' is open on your firewall');
             console.log('================================\n');
         });

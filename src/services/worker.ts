@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { RequestQueue, QueuedRequest } from './request-queue';
 
-const EXECUTION_INTERVAL = 60 * 1000; // 1 minute in milliseconds
+const EXECUTION_INTERVAL = parseInt(process.env.EXECUTION_INTERVAL || '60000', 10); // Default 1 minute in milliseconds
 
 interface SerializedWorker {
   session: string;

@@ -720,6 +720,76 @@ All endpoints return consistent error responses:
 3. Verify WAHA API key is correct
 4. Check WAHA logs for delivery errors
 
+## Production Deployment
+
+For complete production setup instructions, see **[PRODUCTION_SETUP.md](./PRODUCTION_SETUP.md)**.
+
+Quick production start:
+```bash
+cp .env.example .env
+# Edit .env with production settings
+npm install
+npm run build
+npm run prod
+```
+
+### Key Features for Production
+- ✅ **Environment Configuration** - All settings via `.env` file
+- ✅ **Worker Persistence** - Workers survive server restarts
+- ✅ **Automatic Backups** - 5 backups per data file
+- ✅ **Graceful Shutdown** - Safe cleanup on stop
+- ✅ **Health Check** - Built-in monitoring endpoint
+- ✅ **PDF Reports** - Export campaign delivery reports
+- ✅ **File Uploads** - Media and document support
+
+### Environment Variables
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `PORT` | 3000 | Server port |
+| `NODE_ENV` | development | Environment mode |
+| `EXECUTION_INTERVAL` | 60000 | Wait between messages (ms) |
+| `AUTO_SAVE_INTERVAL` | 30000 | Data save frequency (ms) |
+| `CORS_ORIGIN` | * | Allowed origins |
+
+See `.env.example` for all available options.
+
+### Running as Service
+
+**PM2** (Recommended):
+```bash
+npm install -g pm2
+pm2 start npm --name "turbozap" -- run prod
+pm2 logs turbozap
+```
+
+**Systemd** (Linux):
+```bash
+sudo systemctl start turbozap
+sudo journalctl -u turbozap -f
+```
+
+### Monitoring
+
+```bash
+# Health check
+curl http://localhost:3000/health
+
+# Check data persistence
+ls -la data/
+
+# View logs
+pm2 logs turbozap
+# or
+sudo journalctl -u turbozap -f
+```
+
+### Additional Documentation
+
+- **[QUICKSTART.md](./QUICKSTART.md)** - Get up and running in 5 minutes
+- **[PRODUCTION_SETUP.md](./PRODUCTION_SETUP.md)** - Complete deployment guide
+- **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification
+
 ## License
 
 ISC
@@ -727,3 +797,5 @@ ISC
 ## Support
 
 For issues, questions, or contributions, please refer to the project repository.
+
+For production deployment help, see [PRODUCTION_SETUP.md](./PRODUCTION_SETUP.md).
