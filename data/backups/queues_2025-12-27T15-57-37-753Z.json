@@ -1,0 +1,95 @@
+{
+  "queues": {
+    "chris_test": [
+      {
+        "id": "campaign_1766850997785_wjwtyetzn_req_0_1766851023023",
+        "request": {
+          "method": "POST",
+          "url": "http://147.93.0.70:3000/api/sendText",
+          "headers": {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "X-Api-Key": "482a9764aea842dc97622a687ceb70ee"
+          },
+          "data": {
+            "session": "chris_test",
+            "chatId": "256740932270@c.us",
+            "text": "hello there chris"
+          }
+        },
+        "campaignId": "campaign_1766850997785_wjwtyetzn",
+        "status": "completed",
+        "executedAt": "2025-12-27T15:57:03.567Z",
+        "result": {
+          "id": "true_256740932270@c.us_3EB04252658A98E461F0C9",
+          "_data": {
+            "Info": {
+              "Chat": "256740932270@s.whatsapp.net",
+              "Sender": "554796964670:11@s.whatsapp.net",
+              "IsFromMe": true,
+              "IsGroup": false,
+              "AddressingMode": "",
+              "SenderAlt": "",
+              "RecipientAlt": "",
+              "BroadcastListOwner": "",
+              "BroadcastRecipients": null,
+              "ID": "3EB04252658A98E461F0C9",
+              "ServerID": 0,
+              "Type": "",
+              "PushName": "",
+              "Timestamp": "2025-12-27T15:57:00Z",
+              "Category": "",
+              "Multicast": false,
+              "MediaType": "",
+              "Edit": "",
+              "MsgBotInfo": {
+                "EditType": "",
+                "EditTargetID": "",
+                "EditSenderTimestampMS": "0001-01-01T00:00:00Z"
+              },
+              "MsgMetaInfo": {
+                "TargetID": "",
+                "TargetSender": "",
+                "TargetChat": "",
+                "DeprecatedLIDSession": null,
+                "ThreadMessageID": "",
+                "ThreadMessageSenderJID": ""
+              },
+              "VerifiedName": null,
+              "DeviceSentMeta": null
+            },
+            "Message": {
+              "extendedTextMessage": {
+                "text": "hello there chris"
+              }
+            },
+            "IsEphemeral": false,
+            "IsViewOnce": false,
+            "IsViewOnceV2": false,
+            "IsViewOnceV2Extension": false,
+            "IsDocumentWithCaption": false,
+            "IsLottieSticker": false,
+            "IsBotInvoke": false,
+            "IsEdit": false,
+            "SourceWebMsg": null,
+            "UnavailableRequestID": "",
+            "RetryCount": 0,
+            "NewsletterMeta": null,
+            "RawMessage": {
+              "extendedTextMessage": {
+                "text": "hello there chris"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "workers": {
+    "chris_test": {
+      "session": "chris_test",
+      "isActive": true,
+      "createdAt": "2025-12-27T15:02:37.349Z"
+    }
+  }
+}

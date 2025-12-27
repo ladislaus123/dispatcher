@@ -1,0 +1,45 @@
+{
+  "campaigns": {
+    "campaign_1766847703085_o1uppldh4": {
+      "campaignId": "campaign_1766847703085_o1uppldh4",
+      "createdAt": "2025-12-27T15:01:43.085Z",
+      "request": {
+        "messages": [
+          {
+            "variations": [
+              {
+                "type": "text",
+                "content": "oi, tudo bem"
+              }
+            ]
+          }
+        ],
+        "contactSessions": [
+          {
+            "contact": "256740932270",
+            "session": "chris_test"
+          }
+        ]
+      },
+      "wahaRequests": [
+        {
+          "method": "POST",
+          "url": "http://147.93.0.70:3000/api/sendText",
+          "headers": {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "X-Api-Key": "482a9764aea842dc97622a687ceb70ee"
+          },
+          "data": {
+            "session": "chris_test",
+            "chatId": "256740932270@c.us",
+            "text": "oi, tudo bem"
+          }
+        }
+      ],
+      "status": "in_progress",
+      "totalMessages": 1,
+      "totalContacts": 1
+    }
+  }
+}

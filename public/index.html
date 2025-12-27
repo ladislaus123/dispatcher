@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbozap - WhatsApp Campaign Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <h1>Turbozap</h1>
+                    <p class="subtitle">WhatsApp Message Broadcasting Platform</p>
+                </div>
+                <div style="background: #f0f0f0; padding: 15px; border-radius: 6px; min-width: 300px;">
+                    <label style="display: block; font-size: 0.9em; font-weight: 500; margin-bottom: 8px; color: #333;">
+                        Backend URL (for external access):
+                    </label>
+                    <input
+                        type="text"
+                        id="backendUrlInput"
+                        placeholder="e.g., http://192.168.1.100:3000"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9em; box-sizing: border-box;"
+                    >
+                    <small style="display: block; margin-top: 5px; color: #666;">
+                        Leave empty to auto-detect from browser
+                    </small>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="create-campaign">Create Campaign</button>
+                <button class="tab-btn" data-tab="campaigns-list">My Campaigns</button>
+                <button class="tab-btn" data-tab="queue-status">Queue Status</button>
+            </div>
+
+            <!-- Tab 1: Create Campaign -->
+            <div id="create-campaign" class="tab-content active">
+                <h2>Create New Campaign</h2>
+
+                <form id="campaignForm" class="campaign-form">
+                    <!-- Messages Section -->
+                    <section class="form-section">
+                        <h3>Messages</h3>
+                        <div id="messagesContainer" class="messages-container">
+                            <!-- Messages will be added here dynamically -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="addMessageBtn">+ Add Message</button>
+                    </section>
+
+                    <!-- Contacts Section -->
+                    <section class="form-section">
+                        <h3>Contacts & Session</h3>
+
+                        <!-- Session Input -->
+                        <div class="session-input-group">
+                            <label for="sessionInput">Session / Number Name</label>
+                            <input
+                                type="text"
+                                id="sessionInput"
+                                placeholder="e.g., number_1, sales_team, support"
+                                required
+                                class="session-input"
+                            >
+                        </div>
+
+                        <!-- CSV Upload -->
+                        <div class="csv-upload-section">
+                            <h4>Upload Contact Numbers (CSV)</h4>
+                            <p class="csv-instructions">Upload a CSV file with one column containing phone numbers (one per line)</p>
+                            <div class="file-upload-wrapper">
+                                <input
+                                    type="file"
+                                    id="csvFileInput"
+                                    accept=".csv"
+                                    class="file-input"
+                                >
+                                <label for="csvFileInput" class="file-label">
+                                    <span class="file-icon">📁</span>
+                                    <span class="file-text">Choose CSV file or drag here</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Contacts List -->
+                        <div id="contactsContainer" class="contacts-container">
+                            <!-- Contacts will be loaded here after CSV upload -->
+                        </div>
+                    </section>
+
+                    <!-- Submit -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Create Campaign</button>
+                        <button type="button" class="btn btn-secondary" id="resetFormBtn">Reset</button>
+                    </div>
+                </form>
+
+                <div id="createStatus" class="status-message"></div>
+            </div>
+
+            <!-- Tab 2: Campaigns List -->
+            <div id="campaigns-list" class="tab-content">
+                <h2>My Campaigns</h2>
+
+                <div id="campaignsList" class="campaigns-grid">
+                    <!-- Campaigns will be loaded here -->
+                </div>
+
+                <button class="btn btn-primary" id="refreshCampaignsBtn">Refresh Campaigns</button>
+            </div>
+
+            <!-- Tab 3: Queue Status -->
+            <div id="queue-status" class="tab-content">
+                <h2>Queue Status</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Total Sessions</h4>
+                        <p id="statTotalSessions" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Active Sessions</h4>
+                        <p id="statActiveSessions" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Total Requests</h4>
+                        <p id="statTotalRequests" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Pending Requests</h4>
+                        <p id="statPendingRequests" class="stat-value">0</p>
+                    </div>
+                </div>
+
+                <h3>Workers</h3>
+                <div id="workersList" class="workers-list">
+                    <!-- Workers will be loaded here -->
+                </div>
+
+                <div class="queue-actions">
+                    <button class="btn btn-primary" id="refreshQueueBtn">Refresh Status</button>
+                    <button class="btn btn-danger" id="stopAllWorkersBtn">Stop All Workers</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for campaign details -->
+    <div id="campaignModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Campaign Details</h2>
+            <div id="modalBody" class="modal-body">
+                <!-- Campaign details will be loaded here -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="executeCampaignBtn">Execute Campaign</button>
+                <button class="btn btn-warning" id="exportCampaignBtn">📥 Export PDF</button>
+                <button class="btn btn-danger" id="stopCampaignBtn">Stop Campaign</button>
+                <button class="btn btn-danger" id="deleteCampaignBtn" style="background-color: #dc2626; border-color: #dc2626;">🗑️ Delete</button>
+                <button class="btn btn-secondary" id="closeCampaignModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "queues": {
+    "chris_test": []
+  },
+  "workers": {
+    "chris_test": {
+      "session": "chris_test",
+      "isActive": false,
+      "createdAt": "2025-12-27T15:02:37.349Z"
+    }
+  }
+}
